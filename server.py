@@ -144,6 +144,16 @@ def patch_new_price(cafe_id):
     except Exception as e:
         return jsonify(error={"Not Found": "Sorry a cafe with that id was not found in the database."}), 404
 # HTTP DELETE - Delete Record
+@app.route("/report-closed/<int:cafe_id>", methods=["DELETE"])
+def delete_cafe(cafe_id):
+    cafe = db.session.get(Cafe, cafe_id)
+    api_key = request.args.get("api-key")
+    if cafe and api_key == "TopSecretAPIKey":
+        db.session.delete(cafe)
+        db.session.commit()
+        return jsonify(response={"success": "Cafe successfully deleted."}), 200
+    else:
+        return jsonify(error={"Not Found": "Sorry a cafe with that id was not found in the database."}), 404
 
 
 if __name__ == '__main__':
